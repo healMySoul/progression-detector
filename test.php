@@ -22,26 +22,41 @@ function checkProgression($string, $type) {
             return false;
     }
     
-    if (count($data) > 3) {
-        foreach ($data as $el) {
-            
+    if (count($data) > 2) {
+        $diff = $calcDiff($data[1], $data[0]);
+        
+        for ($i = 2; $i <= count($data) - 1; $i++) {
+            if ($calcDiff($data[$i], $data[$i - 1]) != $diff) {
+                return false;
+            }
         }
+        
+        return true;
     }
     
-    return true;
+    return false;
 }
 
 $strings = [
     '1,2,3,4,5',
-    '1,2,5',
+    '1,2,3,5',
+    '1,5',
     '5,15,45',
     '0,30,90',
+    '1,1,1',
 ];
 
 foreach ($strings as $string) {
+    $progression = false;
+    
     foreach (['arithmetic', 'geometric'] as $progressionType) {
-        $verb = checkProgression($string, $progressionType) ? 'IS' : 'IS NOT';
-        
-        echo "$string $verb " . ($progressionType == 'arithmetic' ? 'an': 'a') . " $progressionType progression \n";
+        if (checkProgression($string, $progressionType)) {
+            $progression = true;
+            echo "$string is " . ($progressionType == 'arithmetic' ? 'an': 'a') . " $progressionType progression \n";
+        }
+    }
+    
+    if (!$progression) {
+        echo "$string is not a progression \n";
     }
 }
